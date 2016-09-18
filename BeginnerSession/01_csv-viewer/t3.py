@@ -24,14 +24,17 @@ COLUMNS = [
     '変更理由',
 ]
 
+COLUMN_WIDTH = 36
+
 
 with open('../00_preparation/13TOKYO.CSV', encoding='cp932') as f:
     for line_num, data in enumerate(csv.reader(f), 1):
         print('line number: {0}'.format(line_num))
+
         for i, column in enumerate(COLUMNS):
-            value = data[i]
-            length = 36 - len(column)
+            length = COLUMN_WIDTH - len(column)
             print('{0:{length}}: {1}'.format(column, data[i], length=length))
+
         control_code = input('\nq: quit, Enter: next\n: ')
         if control_code == 'q':
             break
