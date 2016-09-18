@@ -3,7 +3,7 @@
 CSV ファイルを読み込んで1行ずつカラム単位に縦に表示する
 """
 
-import csv 
+import csv
 
 
 COLUMNS = [

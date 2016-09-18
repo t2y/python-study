@@ -3,7 +3,7 @@
 csv モジュールを使って csv データとして読み込んで表示する
 """
 
-import csv 
+import csv
 
 
 with open('../00_preparation/13TOKYO.CSV', encoding='cp932') as f:
