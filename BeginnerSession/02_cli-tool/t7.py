@@ -42,11 +42,11 @@ def parse_argument():
 
     parser.add_argument(
         '-c', '--csv', required=True,
-        help='set environment',
+        help='set csv file',
     )
     parser.add_argument(
         '-m', '--mode', choices=['viewer', 'batch'],
-        help='set environment',
+        help='set mode to handle csv data',
     )
     parser.add_argument(
         '-v', '--verbose', action='store_true',
