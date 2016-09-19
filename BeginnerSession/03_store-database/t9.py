@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-sqlite を使って CSV データを永続化する
+CSV データをオブジェクトとして扱う
 """
 
 import argparse
@@ -130,24 +130,52 @@ INSERT INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 """ % (_TABLE_NAME)
 
 
-def convert_data(data):
-    return [
-        int(data[0]),
-        data[1],
-        data[2],
-        data[3],
-        data[4],
-        data[5],
-        data[6],
-        data[7],
-        data[8],
-        int(data[9]),
-        int(data[10]),
-        int(data[11]),
-        int(data[12]),
-        int(data[13]),
-        int(data[14]),
-    ]
+class CsvData:
+
+    def __init__(self, common_code, old_zip_code, zip_code,
+                 prefecture_kana_name, city_kana_name, town_area_kana_name,
+                 prefecture_kanji_name, city_kanji_name, town_area_kanji_name,
+                 extra_code1, extra_code2, extra_code3, extra_code4,
+                 update_type, update_reason):
+
+        self.common_code = int(common_code)
+        self.old_zip_code = old_zip_code
+        self.zip_code = zip_code
+        self.prefecture_kana_name = prefecture_kana_name
+        self.city_kana_name = city_kana_name
+        self.town_area_kana_name = town_area_kana_name
+        self.prefecture_kanji_name = prefecture_kanji_name
+        self.city_kanji_name = city_kanji_name
+        self.town_area_kanji_name = town_area_kanji_name
+        self.extra_code1 = int(extra_code1)
+        self.extra_code2 = int(extra_code2)
+        self.extra_code3 = int(extra_code3)
+        self.extra_code4 = int(extra_code4)
+        self.update_type = int(update_type)
+        self.update_reason = int(update_reason)
+
+    def get_row(self):
+        return [
+            self.common_code,               # 0
+            self.old_zip_code.strip(),      # 1
+            self.zip_code,                  # 2
+            self.prefecture_kana_name,      # 3
+            self.city_kana_name,            # 4
+            self.town_area_kana_name,       # 5
+            self.prefecture_kanji_name,     # 6
+            self.city_kanji_name,           # 7
+            self.town_area_kanji_name,      # 8
+            self.extra_code1,               # 9
+            self.extra_code2,               # 10
+            self.extra_code3,               # 11
+            self.extra_code4,               # 12
+            self.update_type,               # 13
+            self.update_reason,             # 14
+        ]
+
+    def get_row_with_comment(self):
+        row = self.get_row()
+        return zip(row, COLUMNS)
 
 
 def store_csv_data(reader):
@@ -158,9 +186,9 @@ def store_csv_data(reader):
     try:
         with conn:
             conn.execute(_CREATE_TABLE)
-            for data in reader:
-                insert_data = convert_data(data)
-                conn.execute(_INSERT_DATA, insert_data)
+            for raw_data in reader:
+                data = CsvData(*raw_data)
+                conn.execute(_INSERT_DATA, data.get_row())
             # with statement invokes conn.commit() as context manager
     finally:
         conn.close()
