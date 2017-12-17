@@ -7,15 +7,16 @@ import argparse
 import logging
 import math
 import sys
-import time
 
 import matplotlib.pyplot as plt
+
+from utils import handle_keyboard_interrupt
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)s: %(message)s',
 )
-log = logging.getLogger('backup')
+log = logging.getLogger(__file__)
 
 
 class Notation:
@@ -135,15 +136,6 @@ def parse_argument():
         log.setLevel(logging.DEBUG)
 
     return args
-
-
-def handle_keyboard_interrupt():
-    while True:
-        try:
-            time.sleep(1)
-        except KeyboardInterrupt:
-            plt.close()
-            break
 
 
 def main():
