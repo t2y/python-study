@@ -1,13 +1,14 @@
 """
-Understand B-tree
+Understand the best and worst case height of a B-tree
 
-https://en.wikipedia.org/wiki/B-tree
+* https://en.wikipedia.org/wiki/B-tree
+
+* https://cs.stackexchange.com/questions/59453/why-is-b-tree-search-olog-n
+* https://www.quora.com/How-do-I-derive-the-best-and-worst-case-height-of-a-B-Tree  # noqa
 """
 import argparse
 import logging
 import math
-import sys
-import time
 
 import matplotlib.pyplot as plt
 
