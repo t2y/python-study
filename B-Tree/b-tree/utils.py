@@ -1,9 +1,9 @@
 import time
 
-import matplotlib.pyplot as plt
 
-
-def handle_keyboard_interrupt():
+def draw_with_keyboard_interrupt(plt):
+    plt.draw()
+    plt.pause(1)
     while True:
         try:
             time.sleep(1)

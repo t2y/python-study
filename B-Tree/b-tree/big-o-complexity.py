@@ -6,11 +6,10 @@ https://en.wikipedia.org/wiki/Time_complexity#Logarithmic_time
 import argparse
 import logging
 import math
-import sys
 
 import matplotlib.pyplot as plt
 
-from utils import handle_keyboard_interrupt
+from utils import draw_with_keyboard_interrupt
 
 logging.basicConfig(
     level=logging.INFO,
@@ -153,9 +152,7 @@ def main():
     plt.ylabel('Complexity')
     plt.legend(loc=2)
 
-    plt.draw()
-    plt.pause(1)
-    handle_keyboard_interrupt()
+    draw_with_keyboard_interrupt(plt)
 
 
 if __name__ == '__main__':
