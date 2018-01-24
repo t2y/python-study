@@ -17,8 +17,9 @@ three = (
     'Node[1] parent: None children: (Leaf[0] parent: Keys[1], Leaf[2] parent: Keys[1])',
 )
 
+five_data = [2, 4, 3, 1, 0]
 five = (
-    [2, 4, 3, 1, 0],
+    five_data,
     'Node[1, 3] parent: None children: (Leaf[0] parent: Keys[1, 3], Leaf[2] parent: Keys[1, 3], Leaf[4] parent: Keys[1, 3])',
 )
 
