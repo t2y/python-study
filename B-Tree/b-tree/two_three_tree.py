@@ -211,7 +211,7 @@ class Node:
                 self.parent.children.remove(self)
 
             parent = self.parent
-            while parent is not None:
+            while (parent is not None and len(parent.keys) != 0):
                 parent.join()
                 parent = parent.parent
 
@@ -223,6 +223,21 @@ class Node:
             self.redistribute()
         else:
             self.join()
+
+    def join_on_root(self):
+        if self.is_leaf:
+            return
+
+        child = self.children[0]
+        while not child.is_leaf:
+            child = child.children[1]
+
+        # FIXME: search to set parent attribute for child
+        self.search(child.rightmost)
+
+        self.keys.insert(0, child.rightmost)
+        child.delete(child.rightmost)
+        child.parent.join()
 
     def split(self):
         """
@@ -315,9 +330,9 @@ class TwoThreeTree:
         if not found:
             return
 
+        node.delete(key)
         if node.is_leaf:
             number_of_children = len(node.parent.children)
-            node.delete(key)
             if number_of_children == 3:
                 node.parent.join()
             elif number_of_children == 2:
@@ -329,8 +344,9 @@ class TwoThreeTree:
                 if not node.is_root:
                     msg = 'the number of children is 2 or 3, but %d !'
                     assert False, msg % number_of_children
+        elif node.is_root:
+            node.join_on_root()
         else:  # internal node
-            node.delete(key)
             node.join_on_node(position)
 
         if len(self.root.keys) == 0:
