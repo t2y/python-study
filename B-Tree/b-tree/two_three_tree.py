@@ -204,11 +204,15 @@ class Node:
                 target_child = self.children[1]
 
         bisect.insort(target_child.keys, self.keys.pop(0))
+
         if len(self.keys) == 0:
             if not self.is_root:
-                for child in reversed(self.children):  # FIXME: right child
-                    self.parent.children[1].children.insert(0, child)
                 self.parent.children.remove(self)
+                dest_children = self.parent.children[0].children
+                dest_children_left = [i.leftmost for i in dest_children]
+                for child in reversed(self.children):
+                    index = bisect.bisect(dest_children_left, child.leftmost)
+                    dest_children.insert(index, child)
 
             parent = self.parent
             while (parent is not None and len(parent.keys) != 0):
@@ -430,7 +434,7 @@ def main():
     if len(args.delete_nums) > 0:
         for num in args.delete_nums:
             tt_tree.delete(num)
-            print('=== after deleting ===')
+            print('=== deleted %d, after deleting ===' % num)
             tt_tree.show()
 
 
