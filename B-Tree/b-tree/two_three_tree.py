@@ -215,6 +215,19 @@ class Node:
                 parent.join()
                 parent = parent.parent
 
+    def join_on_leaf(self, number_of_children):
+        if number_of_children == 3:
+            self.parent.join()
+        elif number_of_children == 2:
+            if self.parent.need_redistribute():
+                self.parent.redistribute()
+            else:
+                self.parent.join()
+        else:
+            if not self.is_root:
+                msg = 'the number of children is 2 or 3, but %d !'
+                assert False, msg % number_of_children
+
     def join_on_node(self, position):
         child = self.children[position]
         self.keys.insert(position, child.keys.pop(0))
@@ -330,23 +343,15 @@ class TwoThreeTree:
         if not found:
             return
 
-        node.delete(key)
         if node.is_leaf:
             number_of_children = len(node.parent.children)
-            if number_of_children == 3:
-                node.parent.join()
-            elif number_of_children == 2:
-                if node.parent.need_redistribute():
-                    node.parent.redistribute()
-                else:
-                    node.parent.join()
-            else:
-                if not node.is_root:
-                    msg = 'the number of children is 2 or 3, but %d !'
-                    assert False, msg % number_of_children
+            node.delete(key)
+            node.join_on_leaf(number_of_children)
         elif node.is_root:
+            node.delete(key)
             node.join_on_root()
         else:  # internal node
+            node.delete(key)
             node.join_on_node(position)
 
         if len(self.root.keys) == 0:
