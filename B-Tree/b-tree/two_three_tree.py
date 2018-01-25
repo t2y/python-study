@@ -23,12 +23,6 @@ class Node:
         self.children = []
         self.parent = None  # if node is root, then parent is None
 
-    def __getitem__(self, index):
-        return self.keys[index]
-
-    def __len__(self):
-        return len(self.keys)
-
     def __str__(self):
         # for debug print
         desc = 'Node%s parent: %s' % (self.keys, repr(self.parent))
@@ -59,13 +53,10 @@ class Node:
     def rightmost(self):
         return self.keys[-1] if len(self.keys) > 0 else None
 
-    def index(self, key):
-        return self.keys.index(key)
-
     def get_number_of_keys(self, include_children=True):
         num = len(self.keys)
         if include_children:
-            num += sum(len(i) for i in self.children)
+            num += sum(len(i.keys) for i in self.children)
         return num
 
     def delete_child(self, node):
@@ -137,9 +128,6 @@ class Node:
               Keys[0, 1]        Keys[1]
               Keys[3]           Keys[3]
         """
-        if self.is_leaf:
-            return
-
         children_keys = flatten([i.keys for i in self.children])
         keys = self.keys + children_keys
         keys.sort()
