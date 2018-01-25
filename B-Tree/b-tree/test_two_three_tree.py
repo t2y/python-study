@@ -8,7 +8,7 @@ def insert_tree(data):
     tt_tree = TwoThreeTree(root)
     for i in data[1:]:
         tt_tree.insert(i)
-    tt_tree.update_parent(tt_tree.root)
+    tt_tree.root.update_parent()
     return tt_tree
 
 
@@ -16,7 +16,7 @@ def delete_tree(data, nums):
     tt_tree = insert_tree(data)
     for num in nums:
         tt_tree.delete(num)
-    tt_tree.update_parent(tt_tree.root)
+    tt_tree.root.update_parent()
     return tt_tree
 
 

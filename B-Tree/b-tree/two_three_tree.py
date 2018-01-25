@@ -4,6 +4,8 @@ import logging
 import random
 from itertools import chain
 
+from visitor import print_node
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -301,6 +303,12 @@ class Node:
             if self.is_leaf and len(self.keys) == 0:
                 self.parent.delete_child(self)
 
+    def update_parent(self, parent=None):
+        # FIXME: how to ensure to set parent without walking
+        self.parent = parent
+        for child in self.children:
+            child.update_parent(self)
+
     def show(self, indent=0):
         keys = '%s%s' % ('  ' * indent, repr(self))
         print(keys)
@@ -339,12 +347,6 @@ class TwoThreeTree:
 
         if len(self.root.keys) == 0:
             self.root = self.root.children[0]  # TODO: consider later
-
-    def update_parent(self, node, parent=None):
-        # FIXME: set correct parent
-        node.parent = parent
-        for child in node.children:
-            self.update_parent(child, node)
 
     def show(self):
         self.root.show()
@@ -404,19 +406,18 @@ def main():
         tt_tree.insert(i)
 
     print('=== initial tree structure ===')
-    tt_tree.show()
+    print_node(tt_tree.root)
 
     if args.verbose:
-        tt_tree.update_parent(tt_tree.root)
+        tt_tree.root.update_parent()
         log.debug(str(tt_tree.root))
 
     if len(args.delete_nums) > 0:
         for num in args.delete_nums:
             tt_tree.delete(num)
-            print('=== deleted %d, after deleting ===' % num)
-            tt_tree.show()
+            print('\n=== deleted %d, after deleting ===' % num)
+            print_node(tt_tree.root)
             if args.verbose:
-                tt_tree.update_parent(tt_tree.root)
                 log.debug(str(tt_tree.root))
 
 
