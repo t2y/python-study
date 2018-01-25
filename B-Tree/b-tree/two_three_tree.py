@@ -436,6 +436,9 @@ def main():
             tt_tree.delete(num)
             print('=== deleted %d, after deleting ===' % num)
             tt_tree.show()
+            if args.verbose:
+                tt_tree.update_parent(tt_tree.root)
+                log.debug(str(tt_tree.root))
 
 
 if __name__ == '__main__':
