@@ -265,6 +265,9 @@ class Node:
         if len(self.keys) <= 2:
             return
 
+        if not self.is_root:
+            self.parent.delete_child(self)
+
         left_key = self.keys.pop(0)
         left = Node([left_key])
         left.children = self.children[0:2]
@@ -276,6 +279,11 @@ class Node:
         right.parent = self
 
         self.children = [left, right]
+
+        if not self.is_root:
+            self.parent.insert_merge(self)
+            if len(self.parent.keys) == 3:
+                self.parent.split()
 
     def search(self, key, parent=None):
         self.parent = parent
@@ -289,8 +297,7 @@ class Node:
         return self.children[index].search(key, parent=self)
 
     def insert(self, key):
-        found, node, position = self.search(key)
-        bisect.insort(node.keys, key)
+        bisect.insort(self.keys, key)
 
     def delete(self, key):
         self.keys.remove(key)
@@ -313,34 +320,10 @@ class TwoThreeTree:
     def search(self, key):
         return self.root.search(key)
 
-    def need_split(self, node):
-        for child in node.children:
-            if len(child.keys) == 3:
-                return child, node
-            else:
-                grandchild, gc_parent = self.need_split(child)
-                if grandchild is not None:
-                    return grandchild, gc_parent
-        return None, node
-
-    def split_children(self, child, parent):
-        parent.delete_child(child)
-        child.split()
-        parent.insert_merge(child)
-
-        if len(parent.keys) == 3:
-            if parent.parent is not None:  # means not root node
-                self.split_children(parent, parent.parent)
-
     def insert(self, key):
-        self.root.insert(key)
-
-        child, parent = self.need_split(self.root)
-        if child is not None:
-            self.split_children(child, parent)
-
-        if len(self.root.keys) == 3:
-            self.root.split()
+        found, node, position = self.search(key)
+        node.insert(key)
+        node.split()
 
     def delete(self, key):
         found, node, position = self.search(key)
