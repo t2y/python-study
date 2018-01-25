@@ -1,3 +1,9 @@
+"""
+Implement the 2-3 tree as a preliminary step before to learn B-tree.
+
+* https://en.wikipedia.org/wiki/2%E2%80%933_tree
+* https://www.cs.usfca.edu/~galles/visualization/BTree.html
+"""
 import argparse
 import bisect
 import logging
