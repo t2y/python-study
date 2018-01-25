@@ -1,7 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 
-from treelib import Node, Tree
+from treelib import Tree
 
 
 class NodeVisitor(ABC):
@@ -51,17 +51,7 @@ class TreeLibPrinter(NodeVisitor):
         return tree
 
 
-def visit(visitor, node, indent=''):
-    if node.is_leaf:
-        return visitor.visit_leaf(node, indent)
-    elif node.is_root:
-        return visitor.visit_root(node, indent)
-    else:  # root or internal node
-        return visitor.visit_node(node, indent)
-    return ""
-
-
 def print_node(node):
     node.update_parent()
     printer = TreeLibPrinter()
-    print(visit(printer, node))
+    print(printer.visit(node))
