@@ -68,14 +68,6 @@ class Node:
             num += sum(len(i) for i in self.children)
         return num
 
-    def insert_merge(self, node):
-        for key in node.keys:
-            bisect.insort(self.keys, key)
-        for child in node.children:
-            child.parent = self
-            index = bisect.bisect(self.keys, child.keys[0])
-            self.children.insert(index, child)
-
     def delete_child(self, node):
         self.children.remove(node)
 
@@ -256,6 +248,22 @@ class Node:
         child.delete(child.rightmost)
         child.parent.join()
 
+    def merge_parent(self):
+        """
+            Keys[4]          => Keys[2, 4]
+              Keys[2] (self)      Keys[1]
+                Keys[1]           Keys[3]
+                Keys[3]           Keys[5, 6]
+              Keys[5, 6]
+        """
+        for key in self.keys:
+            bisect.insort(self.parent.keys, key)
+
+        for child in self.children:
+            child.parent = self.parent
+            index = bisect.bisect(self.parent.keys, child.keys[0])
+            self.parent.children.insert(index, child)
+
     def split(self):
         """
             Keys[1, 2, 4] => Keys[2]
@@ -281,7 +289,7 @@ class Node:
         self.children = [left, right]
 
         if not self.is_root:
-            self.parent.insert_merge(self)
+            self.merge_parent()
             if len(self.parent.keys) == 3:
                 self.parent.split()
 
