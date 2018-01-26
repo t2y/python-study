@@ -3,7 +3,7 @@ from treelib import Tree
 from visitor import NodeVisitor
 
 
-class TreeLibPrinter(NodeVisitor):
+class TreeLibVisitor(NodeVisitor):
 
     def visit_root(self, node, tree=None):
         tree = Tree()
@@ -28,4 +28,4 @@ class TreeLibPrinter(NodeVisitor):
 
 def print_node(node):
     node.update_parent()
-    print(TreeLibPrinter().visit(node))
+    print(TreeLibVisitor().visit(node))
