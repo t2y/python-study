@@ -10,7 +10,7 @@ import logging
 import random
 from itertools import chain
 
-from visitor import print_node
+from visitor_anytree import print_node
 
 
 logging.basicConfig(

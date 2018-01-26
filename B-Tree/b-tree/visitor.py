@@ -1,8 +1,6 @@
 from abc import ABC
 from abc import abstractmethod
 
-from treelib import Tree
-
 
 class NodeVisitor(ABC):
 
@@ -26,32 +24,3 @@ class NodeVisitor(ABC):
         else:  # root or internal node
             return self.visit_node(node, **kwargs)
         return ''
-
-
-class TreeLibPrinter(NodeVisitor):
-
-    def visit_root(self, node, tree=None):
-        tree = Tree()
-        root = repr(node)
-        tree.create_node(root, root)
-        for child in node.children:
-            tree = self.visit(child, tree=tree)
-        return tree
-
-    def visit_node(self, node, tree=None):
-        _node = repr(node)
-        tree.create_node(_node, _node, parent=repr(node.parent))
-        for child in node.children:
-            tree = self.visit(child, tree=tree)
-        return tree
-
-    def visit_leaf(self, node, tree=None):
-        leaf = repr(node)
-        tree.create_node(leaf, leaf, parent=repr(node.parent))
-        return tree
-
-
-def print_node(node):
-    node.update_parent()
-    printer = TreeLibPrinter()
-    print(printer.visit(node))
