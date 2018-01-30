@@ -63,26 +63,23 @@ class Node:
     def max(self):
         return self.key if self.right is None else self.right.max()
 
-    def insert_left(self, key):
-        if self.left is None:
-            self.left = Node(key, 'left')
+    def _insert(self, key, attr):
+        node = getattr(self, attr)
+        if node is None:
+            node = Node(key, attr)
+            setattr(self, attr, node)
         else:
-            self.left.insert(key)
-
-    def insert_right(self, key):
-        if self.right is None:
-            self.right = Node(key, 'right')
-        else:
-            self.right.insert(key)
+            node.insert(key)
 
     def insert(self, key):
-        if self.key == key:  # for duplicated key
-            self.insert_right(key)
+        if key < self.key:
+            self._insert(key, 'left')
+        elif self.key < key:
+            self._insert(key, 'right')
+        elif self.key == key:  # for duplicated key
+            self._insert(key, 'right')
         else:
-            if key < self.key:
-                self.insert_left(key)
-            elif self.key < key:
-                self.insert_right(key)
+            assert False
 
     def find_max_node(self, node):
         max_node = node
@@ -96,44 +93,46 @@ class Node:
             if parent is None:
                 return True
 
+            number_of_children = len(self.children)
+
             if self.is_leaf and parent is not None:
                 if key < parent.key:
                     parent.left = None
                 elif parent.key < key:
                     parent.right = None
-                elif key == parent.key:  # delete sub tree when 2 children
+                elif key == parent.key:
+                    # delete sub tree node when deleting 2 children
                     parent.left = None
 
-            elif len(self.children) == 1:
+            elif number_of_children == 1:
                 if self.left is not None:
                     if self.left.key < parent.key:
                         parent.left = self.left
                     elif parent.key < self.left.key:
                         parent.right = self.left
-                        self.left.attr = 'right'
+                        parent.right.attr = 'right'
                     self.left = None
                 elif self.right is not None:
                     if self.right.key < parent.key:
                         parent.left = self.right
-                        self.right.attr = 'left'
+                        parent.left.attr = 'left'
                     elif parent.key < self.right.key:
                         parent.right = self.right
                     self.right = None
 
-            elif len(self.children) == 2:
-                parent = self
+            elif number_of_children == 2:
                 left_max_node = self.find_max_node(self.left)
                 self.key = left_max_node.key
-                if self.left is not None:
-                    self = self.left
-                    self.delete(left_max_node.key, parent)
+
+                # replace self with left sub-tree node
+                # to delete the left max node in sub-tree
+                temp = self
+                self = self.left
+                self.delete(left_max_node.key, temp)
 
             return True
 
-        if self.is_leaf:
-            return False
-
-        if key < self.key and self.left is not None:
+        elif key < self.key and self.left is not None:
             return self.left.delete(key, self)
         elif self.key < key and self.right is not None:
             return self.right.delete(key, self)
