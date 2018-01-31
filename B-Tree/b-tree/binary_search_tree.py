@@ -47,7 +47,7 @@ class Node:
 
     def search(self, key):
         if self.key == key:
-            return key
+            return self
 
         if not self.is_leaf:
             if key < self.key:
