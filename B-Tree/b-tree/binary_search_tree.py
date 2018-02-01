@@ -81,13 +81,19 @@ class Node:
         else:
             assert False
 
+    def find_min_node(self, node):
+        min_node = node
+        while min_node.left is not None:
+            min_node = min_node.left
+        return min_node
+
     def find_max_node(self, node):
         max_node = node
         while max_node.right is not None:
             max_node = max_node.right
         return max_node
 
-    def delete(self, key, parent=None):
+    def delete(self, key, subtree, parent=None):
         if self.key == key:
             self.key = None
             if parent is None:
@@ -101,8 +107,11 @@ class Node:
                 elif parent.key < key:
                     parent.right = None
                 elif key == parent.key:
-                    # delete sub tree node when deleting 2 children
-                    parent.left = None
+                    # delete link from parent when deleting 2 children
+                    if subtree == 'left':
+                        parent.left = None
+                    elif subtree == 'right':
+                        parent.right = None
 
             elif number_of_children == 1:
                 if self.left is not None:
@@ -121,21 +130,29 @@ class Node:
                     self.right = None
 
             elif number_of_children == 2:
-                left_max_node = self.find_max_node(self.left)
-                self.key = left_max_node.key
-
-                # replace self with left sub-tree node
-                # to delete the left max node in sub-tree
-                temp = self
-                self = self.left
-                self.delete(left_max_node.key, temp)
+                if subtree == 'left':
+                    left_max_node = self.find_max_node(self.left)
+                    self.key = left_max_node.key
+                    # replace self with left subtree node
+                    # to delete the left max node in subtree
+                    temp = self
+                    self = self.left
+                    self.delete(left_max_node.key, subtree, temp)
+                elif subtree == 'right':
+                    right_min_node = self.find_min_node(self.right)
+                    self.key = right_min_node.key
+                    # replace self with right subtree node
+                    # to delete the right min node in subtree
+                    temp = self
+                    self = self.right
+                    self.delete(right_min_node.key, subtree, temp)
 
             return True
 
         elif key < self.key and self.left is not None:
-            return self.left.delete(key, self)
+            return self.left.delete(key, subtree, self)
         elif self.key < key and self.right is not None:
-            return self.right.delete(key, self)
+            return self.right.delete(key, subtree, self)
 
         return False
 
@@ -168,8 +185,8 @@ class BinarySearchTree:
     def insert(self, key):
         self.root.insert(key)
 
-    def delete(self, key):
-        self.root.delete(key)
+    def delete(self, key, subtree='left'):
+        self.root.delete(key, subtree)
 
         if self.root.key is None:
             root = self.root.left
@@ -185,6 +202,7 @@ def parse_argument():
     parser = argparse.ArgumentParser()
     parser.set_defaults(
         delete_nums=[],
+        delete_subtree='left',
         max_num=50,
         verbose=False,
     )
@@ -197,6 +215,11 @@ def parse_argument():
     parser.add_argument(
         '--delete-num', dest='delete_nums', type=int, nargs='*',
         help='set delete key',
+    )
+
+    parser.add_argument(
+        '--delete-subtree', dest='delete_subtree',
+        help='set target sub tree when deleting a node has 2 children',
     )
 
     parser.add_argument(
@@ -243,8 +266,9 @@ def main():
 
     if len(args.delete_nums) > 0:
         for num in args.delete_nums:
-            bst.delete(num)
-            print('=== deleted %d, after deleting ===' % num)
+            bst.delete(num, args.delete_subtree)
+            print('=== deleted %d (subtree: %s), after deleting ===' % (
+                  num, args.delete_subtree))
             bst.show()
 
 
