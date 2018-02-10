@@ -468,17 +468,15 @@ def main():
     log.debug(args)
 
     if args.max_num == 3:
-        from test_binary_search_tree import three_data as data
+        from test_red_black_tree import three_data as data
     elif args.max_num == 5:
-        from test_binary_search_tree import five_data as data
+        from test_red_black_tree import five_data as data
     elif args.max_num == 8:
-        from test_binary_search_tree import eight_data as data
+        from test_red_black_tree import eight_data as data
     elif args.max_num == 12:
-        from test_binary_search_tree import twelve_data as data
+        from test_red_black_tree import twelve_data as data
     elif args.max_num == 17:
-        from test_binary_search_tree import seventeen_data as data
-    elif args.max_num == 100:
-        from test_binary_search_tree import hundred_data as data
+        from test_red_black_tree import seventeen_data as data
     else:
         data = list(random.sample(range(args.max_num), args.max_num))
 
