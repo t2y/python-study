@@ -4,14 +4,12 @@ Implement Brute-Force searching
 Reference:
 http://www.geocities.jp/m_hiroi/light/pyalgo11.html
 """
+import logging
 import sys
-
-from utils import LINE_SEPARATOR
-from utils import read_ken_all, read_hyogo
+import timeit
+from utils import log
+from utils import parse_argument
 from utils import read_until_line_end
-
-read_data = read_hyogo
-# read_data = read_ken_all
 
 
 def brute_force_search(line, word, n, m):
@@ -24,9 +22,9 @@ def brute_force_search(line, word, n, m):
     return False
 
 
-def search(text, word):
-    view = memoryview(text)
-    n, m = len(text), len(word)
+def search(blob, word):
+    view = memoryview(blob)
+    n, m = len(blob), len(word)
     end = n - 1
     results = []
     while end > 0:
@@ -35,28 +33,33 @@ def search(text, word):
         if match:
             results.append(line.tobytes())
         view = view[offset:]
-        end = end - offset
+        end -= offset
     return results
 
 
-def main(argv=sys.argv):
-    if len(argv) < 2:
-        print('Usage: %s 八幡町' % argv[0])
-        sys.exit(0)
+def main():
+    args = parse_argument()
+    byte_word = args.word.encode('utf-8')
+    log.info('検索語: %s' % args.word)
+    log.info('検索語のバイト長: %d' % len(byte_word))
 
-    word = argv[1]
-    print('検索語: %s' % word)
-    with read_data() as text:
-        byte_word = word.encode('utf-8')
-        print('検索語のバイト長: %d' % len(byte_word))
-        results = search(text, byte_word)
+    if args.measure:
+        log.setLevel(logging.ERROR)
 
-    print('検索結果: %d 件' % len(results))
+    with args.data() as blob:
+        results = search(blob, byte_word)
+
     for result in results:
-        print(result.decode('utf-8'), end='')
+        log.info(result.decode('utf-8').strip())
+    log.info('検索結果: %d 件' % len(results))
 
 
 if __name__ == '__main__':
-    import timeit
-    sec = timeit.timeit('main()', setup='from __main__ import main', number=10)
-    print('実行時間: %f sec' % sec)
+    args = parse_argument()
+    if args.measure:
+        setup = 'from __main__ import main'
+        sec = timeit.timeit('main()', setup=setup, number=10)
+        log.setLevel(logging.INFO)
+        log.info('実行時間: %f sec' % sec)
+    else:
+        main()
