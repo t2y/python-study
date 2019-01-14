@@ -39,12 +39,12 @@ def search(text, word):
     return results
 
 
-def main():
-    if len(sys.argv) < 2:
-        print('Usage: %s 八幡町' % sys.argv[0])
+def main(argv=sys.argv):
+    if len(argv) < 2:
+        print('Usage: %s 八幡町' % argv[0])
         sys.exit(0)
 
-    word = sys.argv[1]
+    word = argv[1]
     print('検索語: %s' % word)
     with read_data() as text:
         byte_word = word.encode('utf-8')
@@ -57,4 +57,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    import timeit
+    sec = timeit.timeit('main()', setup='from __main__ import main', number=10)
+    print('実行時間: %f sec' % sec)
