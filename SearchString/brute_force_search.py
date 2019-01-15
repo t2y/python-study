@@ -7,33 +7,50 @@ http://www.geocities.jp/m_hiroi/light/pyalgo11.html
 import logging
 import sys
 import timeit
+from utils import LINE_SEPARATOR
 from utils import log
 from utils import parse_argument
-from utils import read_until_line_end
 
 
-def brute_force_search(line, word, n, m):
+def match_word(blob, word, offset, m):
     i = 0
-    end = n - m
-    while i < end:
-        if line[i:i+m].tobytes() == word:
-            return True
+    while i < m:
+        if blob[offset + i] != word[i]:
+            break
         i += 1
-    return False
+    return i == m
 
 
-def search(blob, word):
-    view = memoryview(blob)
+def find_previous_line_end(blob, offset):
+    i = offset
+    while i >= 0 and blob[i] != LINE_SEPARATOR:
+        i -= 1
+    return i + 1
+
+
+def find_current_line_end(blob, offset, n):
+    i = offset
+    while i < n and blob[i] != LINE_SEPARATOR:
+        i += 1
+    return i + 1
+
+
+def brute_force_search(blob, word):
+    blob_view = memoryview(blob)
+    word_view = memoryview(word)
     n, m = len(blob), len(word)
-    end = n - 1
+    end = n - m
     results = []
-    while end > 0:
-        offset, line = read_until_line_end(view)
-        match = brute_force_search(line, word, offset, m)
-        if match:
-            results.append(line.tobytes())
-        view = view[offset:]
-        end -= offset
+    i = 0
+    while i <= end:
+        if match_word(blob_view, word_view, i, m):
+            prev_line_end = find_previous_line_end(blob_view, i)
+            cur_line_end = find_current_line_end(blob_view, i + m, n)
+            line = blob_view[prev_line_end:cur_line_end].tobytes()
+            results.append(line)
+            i = cur_line_end + 1
+        else:
+            i += 1
     return results
 
 
@@ -47,7 +64,7 @@ def main():
         log.setLevel(logging.ERROR)
 
     with args.data() as blob:
-        results = search(blob, byte_word)
+        results = brute_force_search(blob, byte_word)
 
     for result in results:
         log.info(result.decode('utf-8').strip())
