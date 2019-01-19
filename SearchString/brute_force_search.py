@@ -7,7 +7,6 @@ http://www.geocities.jp/m_hiroi/light/pyalgo11.html
 import logging
 import sys
 import timeit
-from utils import LINE_SEPARATOR
 from utils import log
 from utils import parse_argument
 from utils import find_current_line_end, find_previous_line_end
