@@ -3,6 +3,7 @@ import sys
 import pytest
 
 from brute_force_search import brute_force_search
+from simplified_boyer_moore import simplified_boyer_moore_search, make_table
 from utils import read_hyogo
 
 expected = list(map(lambda s: s.encode('utf-8'), [
@@ -21,4 +22,12 @@ def test_brute_force_search():
     byte_word = '八幡町'.encode('utf-8')
     with read_hyogo() as blob:
         actual = brute_force_search(blob, byte_word)
+    assert expected == actual
+
+
+def test_simplified_boyer_moore_search():
+    byte_word = '八幡町'.encode('utf-8')
+    with read_hyogo() as blob:
+        table = make_table(byte_word)
+        actual = simplified_boyer_moore_search(blob, byte_word, table)
     assert expected == actual
