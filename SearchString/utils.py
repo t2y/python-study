@@ -33,6 +33,20 @@ def read_until_line_end(byte):
     return offset, byte[0:offset]
 
 
+def find_previous_line_end(blob, offset):
+    i = offset
+    while i >= 0 and blob[i] != LINE_SEPARATOR:
+        i -= 1
+    return i + 1
+
+
+def find_current_line_end(blob, offset, n):
+    i = offset
+    while i < n and blob[i] != LINE_SEPARATOR:
+        i += 1
+    return i + 1
+
+
 def parse_argument():
     def data_reader_type(typ):
         if typ == 'large':
