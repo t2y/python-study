@@ -13,35 +13,6 @@ from utils import parse_argument
 from utils import find_current_line_end, find_previous_line_end
 
 
-CSIZE = 256   # byte 単位で比較を行う
-
-# 移動量テーブルの作成
-def make_bm_table(pattern, size):
-    bm_table = [size] * CSIZE
-    size -= 1
-    for i in xrange(size):
-        bm_table[ord(pattern[i])] = size - i
-    return bm_table
-
-# BM 法による探索
-def bm_search(buff, pattern):
-    n = len(buff) - 1
-    m = len(pattern)
-    bm_table = make_bm_table(pattern, m)
-    i = m - 1
-    while i < n:
-        j = m - 1
-        while j >= 0:
-            if buff[i] != pattern[j]: break
-            i -= 1
-            j -= 1
-        if j < 0:
-            # 発見
-            i = output_line(buff, i + 1) + m - 1
-        else:
-            i += max(bm_table[ord(buff[i])], m - j)
-
-
 def make_table(word):
     size = len(word)
     table = [size] * 256
