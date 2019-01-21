@@ -44,3 +44,25 @@ def test_boyer_moore_horspool_search():
 
 def test_boyer_moore_sunday_search():
     _boyer_moore_search(boyer_moore_sunday_search, make_table)
+
+
+@pytest.mark.parametrize('word, num', [
+    ('八', 104),
+    ('八幡', 11),
+    ('チョウ', 3229),
+    ('65606', 4),
+    ('28224', 110),
+    ('0', 5223),
+    (',', 5223),
+])
+def test_search_results(word, num):
+    byte_word = word.encode('utf-8')
+    table = make_table(byte_word)
+    qs_table = make_qs_table(byte_word)
+    with read_hyogo() as blob:
+        bfs = brute_force_search(blob, byte_word)
+        sbm = simplified_boyer_moore_search(blob, byte_word, table)
+        bmh = boyer_moore_horspool_search(blob, byte_word, table)
+        bms = boyer_moore_sunday_search(blob, byte_word, qs_table)
+        assert num == len(bfs) == len(sbm) == len(bmh) == len(bms)
+        assert bfs == sbm == bmh == bms

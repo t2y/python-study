@@ -37,9 +37,12 @@ def boyer_moore_horspool_search(blob, word, table):
             cur_line_end = find_current_line_end(blob_view, i + m, n)
             line = blob_view[prev_line_end:cur_line_end].tobytes()
             results.append(line)
-            i = cur_line_end + 1
+            i = cur_line_end
         else:
-            i += table[blob_view[i + m]]
+            pos = i + m
+            if pos >= n:
+                pos = n - 1
+            i += table[blob_view[pos]]
         cnt += 1
     log.info('ループ回数: %d' % cnt)
     return results

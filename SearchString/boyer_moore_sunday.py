@@ -44,7 +44,7 @@ def boyer_moore_sunday_search(blob, word, table):
             cur_line_end = find_current_line_end(blob_view, i + m, n)
             line = blob_view[prev_line_end:cur_line_end].tobytes()
             results.append(line)
-            i = cur_line_end + 1
+            i = cur_line_end
         else:
             i += table[blob_view[i + m]]
         cnt += 1

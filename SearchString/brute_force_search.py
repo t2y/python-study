@@ -32,10 +32,10 @@ def brute_force_search(blob, word):
     while i <= end:
         if match_word(blob_view, word_view, i, m):
             prev_line_end = find_previous_line_end(blob_view, i)
-            cur_line_end = find_current_line_end(blob_view, i + m, n)
+            cur_line_end = find_current_line_end(blob_view, i, n)
             line = blob_view[prev_line_end:cur_line_end].tobytes()
             results.append(line)
-            i = cur_line_end + 1
+            i = cur_line_end
         else:
             i += 1
         cnt += 1
@@ -56,7 +56,7 @@ def main():
         results = brute_force_search(blob, byte_word)
 
     for result in results:
-        log.info(result.decode('utf-8').strip())
+        log.debug(result.decode('utf-8').strip())
     log.info('検索結果: %d 件' % len(results))
 
 
