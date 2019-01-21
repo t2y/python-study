@@ -6,6 +6,7 @@ http://www.geocities.jp/m_hiroi/light/pyalgo11.html
 """
 import logging
 import sys
+import statistics
 import timeit
 
 from utils import log
@@ -70,8 +71,8 @@ if __name__ == '__main__':
     args = parse_argument()
     if args.measure:
         setup = 'from __main__ import main'
-        sec = timeit.timeit('main()', setup=setup, number=10)
+        sec = timeit.repeat('main()', setup=setup, repeat=3, number=5)
         log.setLevel(logging.INFO)
-        log.info('実行時間: %f sec' % sec)
+        log.info('平均実行時間: %f sec' % statistics.mean(sec))
     else:
         main()
