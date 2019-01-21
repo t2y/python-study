@@ -47,6 +47,14 @@ def find_current_line_end(blob, offset, n):
     return i + 1
 
 
+def make_table(word):
+    size = len(word)
+    table = [size] * 256
+    for i in range(size):
+        table[word[i]] = size - i
+    return table
+
+
 def parse_argument():
     def data_reader_type(typ):
         if typ == 'large':

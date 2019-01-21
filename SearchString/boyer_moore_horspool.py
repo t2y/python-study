@@ -1,5 +1,5 @@
 """
-Implement simplified Boyer-Moore searching
+Implement Boyer-Moore Horspool searching
 
 Reference:
 http://www.geocities.jp/m_hiroi/light/pyalgo11.html
@@ -15,17 +15,15 @@ from utils import make_table
 
 
 def match_word(blob, word, offset, m):
-    i = 0
     j = m - 1
-    while i < m:
-        byte = word[j - i]
-        if blob[offset - i] != byte:
+    while j >= 0:
+        if blob[offset + j] != word[j]:
             break
-        i += 1
-    return i == m, byte
+        j -= 1
+    return j < 0
 
 
-def simplified_boyer_moore_search(blob, word, table):
+def boyer_moore_horspool_search(blob, word, table):
     blob_view = memoryview(blob)
     word_view = memoryview(word)
     n, m = len(blob), len(word)
@@ -34,15 +32,14 @@ def simplified_boyer_moore_search(blob, word, table):
     i = 0
     cnt = 0
     while i <= end:
-        match, byte = match_word(blob_view, word_view, i, m)
-        if match:
+        if match_word(blob_view, word_view, i, m):
             prev_line_end = find_previous_line_end(blob_view, i)
-            cur_line_end = find_current_line_end(blob_view, i, n)
+            cur_line_end = find_current_line_end(blob_view, i + m, n)
             line = blob_view[prev_line_end:cur_line_end].tobytes()
             results.append(line)
             i = cur_line_end + 1
         else:
-            i += table[byte]
+            i += table[blob_view[i + m]]
         cnt += 1
     log.info('ループ回数: %d' % cnt)
     return results
@@ -59,10 +56,10 @@ def main():
 
     with args.data() as blob:
         table = make_table(byte_word)
-        results = simplified_boyer_moore_search(blob, byte_word, table)
+        results = boyer_moore_horspool_search(blob, byte_word, table)
 
     for result in results:
-        log.info(result.decode('utf-8').strip())
+        log.debug(result.decode('utf-8').strip())
     log.info('検索結果: %d 件' % len(results))
 
 
