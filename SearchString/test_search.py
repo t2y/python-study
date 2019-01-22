@@ -43,7 +43,7 @@ def test_boyer_moore_horspool_search():
 
 
 def test_boyer_moore_sunday_search():
-    _boyer_moore_search(boyer_moore_sunday_search, make_table)
+    _boyer_moore_search(boyer_moore_sunday_search, make_qs_table)
 
 
 @pytest.mark.parametrize('word, num', [
