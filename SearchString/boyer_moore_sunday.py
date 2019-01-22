@@ -39,7 +39,7 @@ def boyer_moore_sunday_search(blob, word, table):
     results = []
     i = 0
     cnt = 0
-    while i <= end:
+    while i < end:
         if match_word(blob_view, word_view, i, m):
             prev_line_end = find_previous_line_end(blob_view, i)
             cur_line_end = find_current_line_end(blob_view, i + m, n)
