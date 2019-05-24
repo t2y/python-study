@@ -1,0 +1,5 @@
+include LICENSE
+include MANIFEST.in
+include README.md
+recursive-include mypackage *.py
+recursive-include tests *.py
