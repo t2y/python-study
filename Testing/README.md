@@ -35,6 +35,6 @@ Python でテスト駆動開発 (TDD) をするための機能やツールなど
     $ git clone git@github.com:t2y/python-study.git
     $ cd python-study/Testing
     $ ls
-    01_use_standard_library_only   02_use_3rd_party   03_use_type_hint   README.md
+    00_virtualenv			01_use_standard_library_only	02_use_3rd_party		03_use_type_hint		README.md
 
 それぞれのテストのやり方については対応するディレクトリ配下にある README.md を参照してください。
