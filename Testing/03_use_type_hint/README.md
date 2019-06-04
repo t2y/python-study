@@ -28,7 +28,7 @@ Zulip という大規模な Web アプリケーションで型ヒントをつか
 
 ## 型ヒント
 
-[Mypy syntax cheat sheet (Python 3)](http://mypy.readthedocs.io/en/latest/cheat_sheet_py3.html) からよく使いそうな型ヒントを抜き出して簡単に紹介します。
+[Mypy syntax cheat sheet (Python 3)](https://mypy.readthedocs.io/en/latest/cheat_sheet_py3.html) からよく使いそうな型ヒントを抜き出して簡単に紹介します。
 
 ### 組み込み型
 
@@ -143,14 +143,13 @@ x = MyClass() # type: MyClass
 
 mypy をインストールします。
 
-    $ source ~/.virtualenvs/py3testing/bin/activate
     (py3testing) $ pip install mypy-lang
 
 *mypy* というコマンドがインストールされます。これが型チェッカーです。
 
     (py3testing) $ cd 03_use_type_hint
     (py3testing) $ mypy --version
-    mypy 0.4.6
+    mypy 0.701
 
 mypy の型チェックを確認するために誤った型ヒントがついたコードを用意します。
 
@@ -175,11 +174,9 @@ def g() -> List[int]:
 例えば、こういったコードを mypy で型チェックすると以下のようなエラーが検出されます。
 
     (py3testing) $ mypy error_sample1.py
-    error_sample1.py: note: In function "f":
-    error_sample1.py:10: error: Incompatible return value type (got Dict[str, float], expected Dict[str, int])
-    error_sample1.py: note: In function "g":
+    error_sample1.py:10: error: Incompatible return value type (got "Dict[str, float]", expected "Dict[str, int]")
     error_sample1.py:16: error: Argument 1 to "append" of "list" has incompatible type "int"; expected "str"
-    error_sample1.py:18: error: Incompatible return value type (got List[str], expected List[int])
+    error_sample1.py:18: error: Incompatible return value type (got "List[str]", expected "List[int]")
 
 型ヒントと実際のコードから期待される型の操作が異なるためにこういったエラーが出力されます。
 
@@ -191,9 +188,8 @@ def g() -> List[int]:
 
 型ヒントが誤っていてもそのコードが実行可能なものであれば、Python インタープリターはそのまま実行します。このように処理系は型ヒントを全くみないというのが **型ヒントはあくまでオプションである** といわれる所以です。
 
-### 型チェッカーの実用性
+### 型チェッカーの開発状況
 
-[Mypy Development Roadmap](http://mypy-lang.org/roadmap.html) によると、1.0 というバージョンを実用的な区切りのリリースと考えているようにみえます。まだまだ活発な開発状況というのもあり、現時点 (2016-12) では、mypy の利用にあたっては試験運用といったレベルで考えた方が良いでしょう。
+mypy は開発ステータスが *Alpha* ということで仕様が変わることがある可能性を示唆しています。とはいえ、2015年に PEP 484 が承認されてから活発に開発が進められています。十分に実用レベルのツールになっていると思います。mypy のロードマップは以下で確認できます。
 
-ただ型ヒント (型アノテーション) そのものは Python コミュニティで既に標準化されたものなのでコードに徐々に書いていくことをしても構いません。
-
+* [Mypy Roadmap](https://github.com/python/mypy/blob/master/ROADMAP.md)
