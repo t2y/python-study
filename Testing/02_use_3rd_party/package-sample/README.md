@@ -26,42 +26,50 @@ Python のパッケージングを実際のサンプルを触りながら学ぶ�
 
 このサンプルパッケージのリポジトリを clone する。
 
-    $ git clone $url
-    $ cd python-package-sample
+    $ git clone https://github.com/t2y/python-study.git
+    $ cd python-study/Testing/02_use_3rd_party/package-sample
+    $ cd package-sample
     $ ls
-    MANIFEST.in        README.md        mypackage        mypackage.egg-info    setup.py        tests            tox.ini
+    LICENSE  MANIFEST.in  README.md  mypackage  mypackage.egg-info  setup.py  tests  tox.ini
 
-サンプルパッケージをインストールするための仮想環境を作成する。ここでは Python 2.7 のインタープリターを使う仮想環境が作成されています。*virtualenv* はそれぞれの OS ごとのやり方を調べてインストールしてください
+サンプルパッケージをインストールするための仮想環境を作成する。ここでは Python 3.6 を使って仮想環境を作ります。
 
-    $ virtualenv ~/.virtualenvs/mypackage
-    New python executable in /Users/t2y/.virtualenvs/mypackage/bin/python2.7
-    Also creating executable in /Users/t2y/.virtualenvs/mypackage/bin/python
-    Installing setuptools, pip, wheel...done.
-    $ source ~/.virtualenvs/mypackage/bin/activate
-    (mypackage) $
+    $ python3.6 -m venv myenv
+    $ source myenv/bin/activate
+    (myenv) $
 
 pip (Python のパッケージマネージャー) コマンドでインストールされているパッケージを確認する。仮想環境を作成したばかりなので何も表示されない。
 
-    (mypackage) $ pip freeze
+    (myenv) $ pip freeze
 
 サンプルパッケージをインストールする。setup.py の *develop* コマンドを使うと、パッケージをインストールするディレクトリからこのリポジトリへのリンクを貼ってくれる。*develop* でインストールすると、ローカルのリポジトリのソースコードを修正しながらパッケージ開発ができるので便利です。
 
-    (mypackage) $ python setup.py develop
+    (myenv) $ python setup.py develop
 
-pip でインストールされているパッケージを確認すると以下のように表示される。setup.py の *instal_requires* をみてもらえば Python 3.4 より低い環境のときだけ *enum34* というパッケージをインストールするように設定があります。Python 3.4 で *enum* パッケージが標準ライブラリに追加されました。3.4 より古い Python インタープリターのバージョン向けに *enum34* というパッケージが PyPI で公開されています。
+pip でインストールされているパッケージを確認すると以下のように表示される。
 
-    (mypackage) $ pip freeze
-    enum34==1.1.6
+    (myenv) $ pip freeze
+    -e git+https://github.com/t2y/python-study.git@2a3d1c34f6f974885f44cb907954ebb38e97b5b7#egg=mypackage&subdirectory=Testing/02_use_3rd_party/package-sample
+
+ローカルのファイルシステム上のパスを指すパッケージが検出される。pip freeze のすべての内容は以下になる。
+
+    (myenv) $ pip freeze
+    certifi==2019.3.9
+    chardet==3.0.4
+    idna==2.8
+    -e git+https://github.com/t2y/python-study.git@2a3d1c34f6f974885f44cb907954ebb38e97b5b7#egg=mypackage&subdirectory=Testing/02_use_3rd_party/package-sample
+    requests==2.22.0
+    urllib3==1.25.3
 
 インストールしたサンプルパッケージのコマンドを実行してみましょう。このサンプルパッケージでは *mycmd* と *yourcmd* というコマンドがインストールされます。
 
-    (mypackage) $ mycmd red
+    (myenv) $ mycmd red
     I am mypackage.main
     Color.red
-    (mypackage) $ mycmd 2
+    (myenv) $ mycmd 2
     I am mypackage.main
     Color.green
-    (mypackage) $ yourcmd
+    (myenv) $ yourcmd
     I am utils.cmd
 
 ## パッケージングの詳細
@@ -74,13 +82,6 @@ Python は標準ライブラリで Distutils というパッケージングの�
 
 *setup()* 関数でパッケージの定義をします。*find_packages()* 関数を使うと、自動的に Python のソースファイルを検出して公開するパッケージを設定してくれます。
 
-    REQUIRES = []
-
-    if sys.version_info < (3, 4):
-        REQUIRES.append('enum34')
-
-Python のバージョンよって標準ライブラリの違いがあります。setup.py を実行する Python インタープリターのバージョンから依存関係を変更したいときはこういった方法で動的に依存関係のパッケージを設定します。
-
 次に *setup()* 関数の主な項目をコメントで説明します。
 
     setup(
@@ -92,7 +93,9 @@ Python のバージョンよって標準ライブラリの違いがあります�
         author='Tetsuya Morimoto',  # 著者
         author_email='t2y@example.com',  # 著者のメールアドレス
         packages=find_packages(),  # 公開するパッケージ
-        install_requires=REQUIRES,  # 依存するパッケージ (動的に生成する必要がなければ、リストにパッケージ名を列挙する)
+        install_requires=[
+            'requests',
+        ],  # 依存するパッケージ
         tests_require=[  # テストでのみ使う依存パッケージ
             'tox', 'pytest', 'pytest-pep8', 'pytest-flakes',
         ],
@@ -111,18 +114,13 @@ Python のバージョンよって標準ライブラリの違いがあります�
 
 例えば、Python 3.5 のインタープリターを使った仮想環境では以下のように実行します。但し、実行するにはあらかじめシステムに Python 3.5 がインストールされている必要があります。複数の Python バージョンをシステムにインストールする方法はそれぞれの OS ごとのやり方を調べてインストールしてください。
 
-    (mypackage) $ pip install tox
-    (mypackage) $ tox -e py35
-    GLOB sdist-make: /Users/t2y/work/repo/python-package-sample/setup.py
-    py35 inst-nodeps: /Users/t2y/work/repo/python-package-sample/.tox/dist/mypackage-0.1.0.zip
-    py35 installed: apipkg==1.4,execnet==1.4.1,mypackage==0.1.0,pep8==1.7.0,py==1.4.31,pyflakes==1.3.0,pytest==3.0.5,pytest-cache==1.0,pytest-flakes==1.0.1,pytest-pep8==1.0.6,storage-deploy==0.1.0
-    py35 runtests: PYTHONHASHSEED='4159216310'
-    py35 runtests: commands[0] | py.test -v --pep8 --flakes mypackage tests
+    (myenv) $ pip install tox
+    (myenv) $ tox -e py35
     === test session starts ===
-    platform darwin -- Python 3.5.2, pytest-3.0.5, py-1.4.31, pluggy-0.4.0 -- /Users/t2y/work/repo/python-package-sample/.tox/py35/bin/python3.5
-    cachedir: .cache
-    rootdir: /Users/t2y/work/repo/python-package-sample, inifile:
-    plugins: pep8-1.0.6, flakes-1.0.1
+    platform darwin -- Python 3.5.7, pytest-4.6.2, py-1.8.0, pluggy-0.12.0 -- path/to/Testing/02_use_3rd_party/package-sample/.tox/py35/bin/python
+    cachedir: .tox/py35/.pytest_cache
+    rootdir: path/to/Testing/02_use_3rd_party/package-sample
+    plugins: flakes-4.0.0, pep8-1.0.6
     collected 16 items
 
     mypackage/__init__.py SKIPPED
@@ -143,7 +141,7 @@ Python のバージョンよって標準ライブラリの違いがあります�
     tests/test_enum.py::test_get_color_exception[5] PASSED
 
     === 12 passed, 4 skipped in 0.04 seconds ===
-    ________________________________________________________________________________________________ summary ________________________________________________________________________________________________
+    ____________________________________ summary ____________________________________
       py35: commands succeeded
       congratulations :)
 
@@ -152,9 +150,9 @@ Python のバージョンよって標準ライブラリの違いがあります�
 
 *tox* の設定ファイルである *tox.ini* をみてみましょう。*deps* にあるのはテストに必要なツールのパッケージ名です。*commands* にあるコマンドが実際にテストを実行するためのコマンドになります。
 
-    (mypackage) $ cat tox.ini
+    (myenv) $ cat tox.ini
     [tox]
-    envlist = py27, py33, py34, py35
+    envlist = py35, py36, py37
 
     [testenv]
     deps =
@@ -168,12 +166,12 @@ Python のバージョンよって標準ライブラリの違いがあります�
 
 mypackage ディレクトリのコーディングスタイルをテストします。
 
-    (mypackage) $ pip install pytest pytest-pep8 pytest-flakes
-    (mypackage) $ py.test -v --pep8 --flakes mypackage
+    (myenv) $ pip install pytest pytest-pep8 pytest-flakes
+    (myenv) $ py.test -v --pep8 --flakes mypackage
     ========================================================================================== test session starts ==========================================================================================
-    platform darwin -- Python 2.7.12, pytest-3.0.5, py-1.4.31, pluggy-0.4.0 -- /Users/t2y/.virtualenvs/mypackage/bin/python2.7
+    platform darwin -- Python 3.5.7, pytest-4.6.2, py-1.8.0, pluggy-0.12.0 -- path/to/Testing/02_use_3rd_party/package-sample/.tox/py35/bin/python
     cachedir: .cache
-    rootdir: /Users/t2y/work/repo/python-package-sample, inifile:
+    rootdir: path/to/Testing/02_use_3rd_party/package-sample
     plugins: pep8-1.0.6, flakes-1.0.1
     collected 6 items
 
@@ -188,11 +186,11 @@ mypackage ディレクトリのコーディングスタイルをテストしま�
 
 tests ディレクトリにあるテストを実行します。
 
-    (mypackage) $ py.test -v --pep8 --flakes tests
+    (myenv) $ py.test -v --pep8 --flakes tests
     === test session starts ===
-    platform darwin -- Python 2.7.12, pytest-3.0.5, py-1.4.31, pluggy-0.4.0 -- /Users/t2y/.virtualenvs/mypackage/bin/python2.7
+    platform darwin -- Python 3.5.7, pytest-4.6.2, py-1.8.0, pluggy-0.12.0 -- path/to/Testing/02_use_3rd_party/package-sample/.tox/py35/bin/python
     cachedir: .cache
-    rootdir: /Users/t2y/work/repo/python-package-sample, inifile:
+    rootdir: path/to/Testing/02_use_3rd_party/package-sample
     plugins: pep8-1.0.6, flakes-1.0.1
     collected 10 items
 

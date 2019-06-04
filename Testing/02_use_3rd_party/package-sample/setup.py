@@ -7,11 +7,6 @@ from setuptools import find_packages, setup
 metadata_py = open('mypackage/main.py').read()
 metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", metadata_py))
 
-REQUIRES = []
-
-if sys.version_info < (3, 4):
-    REQUIRES.append('enum34')
-
 setup(
     name='mypackage',
     version=metadata['version'],
@@ -37,7 +32,9 @@ setup(
     platforms=['unix', 'linux', 'osx', 'windows'],
     packages=find_packages(),
     include_package_data=True,
-    install_requires=REQUIRES,
+    install_requires=[
+        'requests',
+    ],
     tests_require=[
         'tox', 'pytest', 'pytest-pep8', 'pytest-flakes',
     ],
