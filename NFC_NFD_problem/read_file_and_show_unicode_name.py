@@ -7,7 +7,6 @@ def show_unicode_name(line):
         space = ' '
         if unicodedata.combining(char) != 0:
             space += ' '
-            is_nfd = True
         print(f'{char}{space}: {name}')
 
 filename = sys.argv[1]
