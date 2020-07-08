@@ -114,6 +114,12 @@ alice は語学が堪能で language='ja-JP' をパラメーターに指定す�
   * slack の Outgoing WebHooks を使う
   * Autopilot というコンポーネントに設定する
 
+slack 側の Custom Integrations > Outgoing WebHooks に設定する url のフォーマット
+
+```
+https://channels.autopilot.twilio.com/v1/<ACCOUNT_SID>/<ASSISTANT_SID>/slack
+```
+
 内容
 
 * ドキュメントをみながら設定を一緒にやってみる
