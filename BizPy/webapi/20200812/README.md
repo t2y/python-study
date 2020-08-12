@@ -49,6 +49,11 @@ pprint(r.request.headers)
 pprint(r.request.body)
 ```
 
+それぞれの Content-Type のフォーマットの説明は以下のドキュメントを参照。
+
+* `application/x-www-form-urlencoded`: [POST](https://developer.mozilla.org/ja/docs/Web/HTTP/Methods/POST) メソッドの説明に出てくる
+* `application/json`: [JSON](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/JSON)　がそう
+
 ## gooラボさんの日本語解析 API を試す
 
 ![](https://u.xgoo.jp/img/sgoo.png)
