@@ -71,6 +71,21 @@ pprint(r.request.body)
 * [テキストペア類似度API](https://labs.goo.ne.jp/api/textpair_doc)
 * [スロット値抽出API](https://labs.goo.ne.jp/api/jp/slot-value-extraction/)
 
+実行例)
+
+```bash
+$ python hiragana_translation.py "漢字が混ざっている文章"
+application/x-www-form-urlencoded 形式でリクエスト
+リクエストヘッダー: {'User-Agent': 'python-requests/2.23.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-type': 'application/x-www-form-urlencoded', 'Content-Length': '201'}
+リクエストボディ: app_id=XXX&sentence=%E6%BC%A2%E5%AD%97%E3%81%8C%E6%B7%B7%E3%81%96%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E6%96%87%E7%AB%A0&output_type=hiragana
+レスポンス: {'converted': 'かんじが まざっている ぶんしょう', 'output_type': 'hiragana', 'request_id': 'labs.goo.ne.jp\t1597191586\t0'}
+========================================================================
+application/json 形式でリクエスト
+リクエストヘッダー: {'User-Agent': 'python-requests/2.23.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-type': 'application/json', 'Content-Length': '187'}
+リクエストボディ: {"app_id": "XXX", "sentence": "\u6f22\u5b57\u304c\u6df7\u3056\u3063\u3066\u3044\u308b\u6587\u7ae0", "output_type": "hiragana"}
+レスポンス: {'converted': 'かんじが まざっている ぶんしょう', 'output_type': 'hiragana', 'request_id': 'labs.goo.ne.jp\t1597191586\t0'}
+========================================================================
+```
 
 ## Python プログラミング Tips
 
@@ -97,4 +112,24 @@ class OperatingSystem(Enum):
 
 ```bash
 $ pip install janome
+```
+
+```python
+from janome.tokenizer import Tokenizer
+
+t = Tokenizer()
+text = 'すもももももももものうち'
+for token in t.tokenize(text):
+    print(token)
+```
+
+```bash
+$ python janome_parse.py
+すもも	名詞,一般,*,*,*,*,すもも,スモモ,スモモ
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+の	助詞,連体化,*,*,*,*,の,ノ,ノ
+うち	名詞,非自立,副詞可能,*,*,*,うち,ウチ,ウチ
 ```
