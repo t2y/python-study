@@ -40,6 +40,12 @@ HTTP プロトコルで扱うデータのことをリソースと呼ぶ。
 * HTTP リクエストの場合は送るデータの種別を指す
 * HTTP レスポンスの場合は受け取るデータの種別を指す
 
+データを送るときになんらかのルールがないと、受け取った側がどのように処理していいかわからない。
+汎用的なデータ形式としてキーと値のペアを送りたい。
+どこがキーでどこがキーに対応する値なのかを受け取った側が判別できないといけない。
+送る側が一般的な規則に従ってデータを送っていることを相手側に知らせるために Content-Type を指定して、
+そのフォーマットでデータを送る必要がある。
+
 実際にリクエストヘッダーとデータのフォーマットをみてみる。
 
 ```python
@@ -51,8 +57,8 @@ pprint(r.request.body)
 
 それぞれの Content-Type のフォーマットの説明は以下のドキュメントを参照。
 
-* `application/x-www-form-urlencoded`: [POST](https://developer.mozilla.org/ja/docs/Web/HTTP/Methods/POST) メソッドの説明に出てくる
-* `application/json`: [JSON](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/JSON)　がそう
+* `application/x-www-form-urlencoded`: [POST](https://developer.mozilla.org/ja/docs/Web/HTTP/Methods/POST) メソッドの説明に出てくるフォーマット
+* `application/json`: [JSON](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/JSON) で説明されているフォーマット
 
 ## gooラボさんの日本語解析 API を試す
 
