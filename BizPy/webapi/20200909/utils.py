@@ -23,7 +23,7 @@ def get_contents(data):
         return contents
 
 
-def test(path='./output.json'):
+def test(path='./contents.json'):
     data = json.load(open(path))
     contents = get_contents(data)
     entities = get_entities(contents)

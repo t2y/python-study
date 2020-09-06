@@ -23,7 +23,7 @@ def main():
     data = client.get(URL, params)
     if data is not None:
         pprint(data)
-        json.dump(data, open('output.json', 'w'))  # ファイルとして保存
+        json.dump(data, open('contents.json', 'w'))  # ファイルとして保存
 
 
 if __name__ == '__main__':
