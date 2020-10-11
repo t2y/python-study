@@ -1,7 +1,7 @@
 
 # テスト
 
-[ソフトウェアテスト](https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2%E3%83%86%E3%82%B9%E3%83%88) はソフトウェアの開発とともに発展してきました。様々な技術や手法があり、分類の仕方もあります。
+[ソフトウェアテスト](https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2%E3%83%86%E3%82%B9%E3%83%88) (以下テスト) はソフトウェア開発の歴史とともに発展してきました。様々な手法があり、分類の仕方もあります。
 
 まずテストを次のように分類してみます。
 
@@ -20,274 +20,249 @@
 * 性能テスト (パフォーマンステスト)
 * 負荷テスト (ストレステスト)
 
-ここではこういったテスト分類の違いを説明しませんが、テスト対象のアプリケーションや組織によってテストの呼び方や内容が異なることもあります。とくに結合テストやシステムテストの内容はチームや組織によって異なることが多いです。
+ここではこういったテスト分類の違いを説明しませんが、テスト対象のアプリケーションの特性や組織によってテストの呼び方や内容が異なることもあります。とくに結合テストやシステムテストの内容はチームや組織によって異なることが多いです。
 
-こういったテスト分類の中でももっとも基本的なテスト、且つ重要度も高いものが単体テスト (以下ユニットテスト) です。最近のプログラミング言語ではたいていユニットテストのためのライブラリやツールが標準で付属しているものが多く、そのやり方もプラクティスとして広く共有されています。
+こういったテスト分類の中でももっとも基本的なテスト、且つ重要度も高いものが単体テスト (以下ユニットテスト) です。最近のプログラミング言語ではたいていユニットテストのためのライブラリやツールがあり、そのやり方もプラクティスとして広く共有されています。
 
 Python においても [unittest](https://docs.python.org/ja/3/library/unittest.html) という、まさにその名前の通り、ユニットテストのためのフレームワークが標準ライブラリとして付属しています。
 
-先のテスト手法の分類で言えばユニットテストではありませんが、Python 独自のテストとして [doctest](https://docs.python.org/ja/3/library/doctest.html) と呼ばれるものがあります。ビジネスパーソン向けのテストとして私がお奨めしたい手法としても doctest はお手軽でよいと考えています。
-
-
+また Python 独自のテストとして [doctest](https://docs.python.org/ja/3/library/doctest.html) と呼ばれるものがあります。doctest はユニットテストの代替にはなりませんが、ビジネスパーソン向けのお手軽なテストとしてお奨めできるものです。
 
 
 ## doctest
 
-[doctest](https://docs.python.org/ja/3/library/doctest.html) は、ドキュメントとテストを組み合わせたユニークな仕組みです。
+[doctest](https://docs.python.org/ja/3/library/doctest.html) は、ドキュメント内に書いたコードをテストにするユニークな仕組みです。
 
+Pythonのモジュール・クラス・関数などの先頭に書く文章のことを **docstring** と呼びます。doctest は docstring に記述したコードをテストのために実行します。
 
+docstring はモジュールや関数の `__doc__` 属性から参照できます。
+
+```python
+>>> import utils
+>>> print(utils.__doc__)
+
+ここがモジュールレベルの docstring です。
+このモジュールはユーティリティ関数を提供します。
+```
+
+```python
+>>> print(utils.get_entities.__doc__)
+
+    ここが関数の docstring です。
+    [[エントリ]] のように二重角括弧で囲まれた文字列を取り出します。
+
+    >>> get_entities("")
+    []
+    >>> get_entities("括弧でくくられた[[エントリ]]を取り出す")
+    ['エントリ']
+    >>> get_entities("[[カッコ|括弧]]でくくられた[[エントリ]]を取り出す")
+    ['カッコ', 'エントリ']
+    >>> get_entities("テストが[[失敗 ]]する例を書く")
+    ['失敗']
+```
+
+ドキュメントとしてそのモジュールや関数の代表的な使い方を説明するときに実際のコードの利用例を紹介することを考えます。利用例のドキュメントとしても役立ち、ちょっとしたテストにもなるという一石二鳥のようなものです。
+
+### テスト実行例
+
+```bash
+$ python utils.py
+```
+
+### 使いどころ
+
+汎用的な用途に使える小さい関数 (ユーティリティ関数と呼んだりします) などのドキュメント代わりにテストを書くとよいと思います。
+
+例)
+
+* 日時を扱うような煩雑な処理
+* 正規表現の処理のようなパッとみて入出力がわかりにくい処理
 
 
 ## unittest
 
+[unittest](https://docs.python.org/ja/3/library/unittest.html) は、ユニットテストのためのフレームワークです。
 
+> unittest ユニットテストフレームワークは元々 JUnit に触発されたもので、 他の言語の主要なユニットテストフレームワークと同じような感じです。 テストの自動化、テスト用のセットアップやシャットダウンのコードの共有、テストのコレクション化、そして報告フレームワークからのテストの独立性をサポートしています。
+
+doctest はドキュメントのおまけにちょっとしたテストを書くといった用途に使います。ちゃんとしたユニットテストを書くときは unittest を使った方がよいです。
+
+```python
+class MyTestCase(unittest.TestCase):
+
+    def test_case1(self):
+        expected = 3
+        actual = call_some_method(param)
+        self.assertEqual(expected, actual)
+
+    def test_case2(self):
+        ...
+```
+
+`setUp`/`tearDown` といったメソッドを使うことでテストの前処理や後処理を実行することもできます。テストデータを読み込んだり、テストで出力された一時ファイルを削除したりといった用途に使えます。
+
+### テスト実行例
+
+```bash
+$ python test_utils.py 
+```
+
+### 使いどころ
+
+doctest では面倒なとき、モジュールやクラスなど一定数以上のテストケースを伴うユニットテストを書きたいときなどに使います。
+
+例)
+
+* 一般的なユニットテストを必要とするモジュールや処理
+* テストデータを必要とするモジュールや処理
+
+### 余談: PEP 8 に準拠していない標準ライブラリ
+
+[JUnit](https://junit.org/) という、Java 製のテストフレームワークの仕組みをもってきたという歴史的経緯があり、命名規則が [PEP 8](https://pep8-ja.readthedocs.io/ja/latest/) に準拠していません。Python 3 に移行するときに PEP 8 に準拠するように変更しては？といった意見も出たそうですが、既存のテストコードの互換性を壊すほどのメリットはないだろうということで見送られたような話しを聞いた気がします。
+
+PEP 8 が確立する前に作られた古くからあるライブラリなどでは後方互換性を維持する目的のために命名規則に準拠していない場合があります。[threading](https://docs.python.org/ja/3/library/threading.html) ライブラリなどもそう。
 
 
 ## pytest
 
+Python の unittest ライブラリは JUnit に由来するものであることを説明しました。ユニットテストの考え方自体は問題ないけれど、Python と Java の言語の違いに由来する大きな違いとして unittest はテストクラスを作ることを前提とした設計思想の違いがあります。Java はクラスを書かないとプログラミングできないが、Python はそうではありません。
 
+そこで他言語からもってきたものではなく、Python という言語向けに設計されたテストライブラリとして [pytest](https://docs.pytest.org/en/stable/) があります。おそらく Python におけるサードパーティ製のテストライブラリのデファクトスタンダードと呼んでいいと思います。また pytest はユニットテストだけでなく、インテグレーションテスト向けの機能も含んでいます。中規模以上の開発プロジェクトなどでは pytest をテストライブラリとして採用しているプロジェクトも多いです。
 
+pytest は多くの機能を提供していますが、ここではテストを書き始める取っ掛かりとなるよう、ユニットテストに必要な簡単な機能のみの紹介に留めます。
 
+pip コマンドでインストールします。
 
+```bash
+$ pip install pytest
+```
 
-# Web API とは
+### 基本はテスト関数と assert 文のみ
 
-> API (Application Programming Interface) はアプリケーションを利用するときに、外部とのインターフェースとなるものの総称です。
-> アプリケーションの提供元が利用者に対して「この機能はこのような仕様で使えます」と定めたものです。
-> Web APIは Webで利用する HTTP/HTTPS というプロトコルを使用し、ネットワークを経由して提供される API を指します。
+Python のデバッグ用の機能として [assert 文](https://docs.python.org/ja/3/reference/simple_stmts.html#the-assert-statement) があります。
 
-Web API は基本的には1つのリクエストに対して1つのレスポンスを返す仕組み。
-
-Web API を使う SDK (Software Development Kit) というのは、
-複数の Web API を呼び出してなんらかの処理を実現したり、
-開発者が Web API の仕様を知らなくても使えるように簡潔にしたり、
-Web API を呼び出すときに本質ではないいろいろな面倒な処理を隠蔽する意図があったりする。
-
-一般論として SDK を使うとプログラムの中から Web API の呼び出しを簡単にしてくれるものと考えてよい。
-SDK も内部的には Web API を呼び出して機能を実現している。
-
-[requests というサードパーティライブラリ](https://github.com/t2y/python-study/tree/master/BizPy/webapi/20200812#requests) を使って Web API のリクエストを行います。
-
-## HTTP クライアントを共通モジュールとして使う
-
-前回の勉強会で使ったサンプルコードを再利用して汎用の HTTP クライアントとして使えるようにする。
-
-状態をもたないものをクラスとして定義する必要性はないけど、一定の役割をもつ処理をクラスでまとめるとクラス名を1つの名前空間として扱えるので管理しやすくなる。[オブジェクト指向プログラミング](https://ja.wikipedia.org/wiki/%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E6%8C%87%E5%90%91%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0) と呼ばれるソフトウェアの開発手法の話題になる。難しい話題になるのでここでは扱いません。
+pytest ではこの assert 文を使ってテスト結果を検証します。unittest のようにテストクラスを作ったり、専用のアサート関数を使い分けたりする必要はありません。
 
 ```python
-from client import HttpClient
-
-client = HttpClient()
-data = client.get('https://qiita.com/api/v2/users/t2y', {})
+def test_single_entry():
+    expected = ['エントリ']
+    actual = get_entities("括弧でくくられた[[エントリ]]を取り出す")
+    assert expected == actual
 ```
 
-## Wikipedia の Web API のドキュメント
+これだけでも十分シンプルにテスト関数を実装できます。
 
-* https://www.mediawiki.org/wiki/API:Main_page/ja
-* https://www.mediawiki.org/wiki/API:Data_formats/ja
+### データ駆動テスト
 
-## MediaWiki API 入門
+pytest の用語ではパラメーターテストまたはフィクスチャテストと呼ばれています。一般的なテストの用語だと、**データ駆動テスト** と呼ばれたりもします。
 
-[MediaWiki APIを使ってWikipediaの情報を取得](https://qiita.com/yubessy/items/16d2a074be84ee67c01f) の記事がわかりやすかったのでチュートリアルとしてみるとよいと思います。
-
-この記事を参考にしながら MediaWiki API へ渡すパラメーターをみていきます。
-
-### 記事の本文を取得
-
-Wikipedia のタイトルを指定して記事を習得する。
-
-#### `format` パラメーターの違い
-
-レスポンスのデータフォーマットを `xml` か `json` で選択できる。
-
-* https://ja.wikipedia.org/w/api.php?action=query&prop=revisions&titles=%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0&rvprop=content&format=xml
-* https://ja.wikipedia.org/w/api.php?action=query&prop=revisions&titles=%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0&rvprop=content&format=json
-
-#### xml と json の違い
-
-`xml` を提供しているのは歴史的経緯だと推測します。昔は `xml` でも扱われていた。
-
-* 特別な理由がなければ、いまは json を選択するとよいでしょう
-
-このフォーマットによって日本語の文字列の扱いが違うことに気付いたのでみていく。
-
-* xml: 文字コード指定を省略した場合は utf-8/utf-16 でエンコードされているとみなす
-* json: Unicode エスケープされた文字列が返される
-
-リファレンス
-
-* https://ja.wikipedia.org/wiki/Extensible_Markup_Language
-
-#### デバッグを容易にするために Web API のレスポンスを dump しておく
-
-プログラムを作成しているとき、コードを修正して実行するといったことを何度も繰り返します。簡単なコードを書くときはそれでも構いませんが、毎回 Web API を呼び出す必要があります。
-
-次のようなデメリットがあります。
-
-* インターネットに接続していないと実行できない
-* Web API を呼び出すので (呼び出さない場合と比べて) 実行時間がかかる
-* クライアント/サーバーともにマシンリソースを浪費する
-
-そういったとき、レスポンスのデータをローカルファイルとして保存しておくことでこれらの制約やリソースの浪費を回避できます。
+テスト関数に対して複数のテストデータをパラメーター化してテストするやり方です。境界値のテストや網羅的なテストに便利です。
 
 ```python
-json.dump(data, open('contents.json', 'w'))  # ファイルとして保存
+@pytest.mark.parametrize('year, month, expected', [
+    (2019, 12, date(2019, 12, 31)),
+    (2020, 1, date(2020, 1, 31)),
+    (2020, 2, date(2020, 2, 29)),
+    (2020, 3, date(2020, 3, 31)),
+    (2020, 4, date(2020, 4, 30)),
+    (2020, 5, date(2020, 5, 31)),
+    (2020, 6, date(2020, 6, 30)),
+    (2020, 7, date(2020, 7, 31)),
+    (2020, 8, date(2020, 8, 31)),
+    (2020, 9, date(2020, 9, 30)),
+    (2020, 10, date(2020, 10, 31)),
+    (2020, 11, date(2020, 11, 30)),
+    (2020, 12, date(2020, 12, 31)),
+    (2021, 1, date(2021, 1, 31)),
+])
+def test_last_day_of_month(year, month, expected):
+    assert expected == get_last_day_of_month1(year, month)
 ```
 
-#### dump したレスポンスをベースにユーティリティ関数を実装する
+#### リファレンス
 
-例えば `contents.json` というファイルで保存したものを使ってコードを書くことで効率よくプログラミングできる。
+* [Parametrizing fixtures and test functions](https://docs.pytest.org/en/stable/parametrize.html)
+
+### フィクスチャテスト
+
+unittest で行ったようなテストデータを読み込むケースもやってみましょう。pytest ではフィクスチャテストと呼んでいます。
+
+`@pytest.fixture` というデコレーターが付いた関数の名前を、他のテスト関数の引数名として使うと自動的に実行結果が引数として渡されます。一見びっくりするようなやり方にみえるかもしれません。pytest ではこういった仕組みを依存性注入 (dependency injection) とも呼んでいます。unittest のやり方とは全く毛色が異なることがわかると思います。
 
 ```python
-def test(path='./contents.json'):
-    data = json.load(open(path))
-    contents = get_contents(data)
-    entities = get_entities(contents)
-    pprint(entities)
+@pytest.fixture
+def contents():
+    with open('./contents.json') as f:
+        data = json.load(f)
+    for key in data['query']['pages']:
+        revision = data['query']['pages'][key]['revisions'][0]
+        contents = revision['*']
+        return contents
 
-
-if __name__ == '__main__':
-    test()  # モジュールとしてインポートされたときは呼び出されない
+def test_actual_contents(contents):
+    actual = get_entities(contents)
+    assert 223 == len(actual)
+    assert 'File:Prog_one.png' == actual[0]
+    assert 'Category:ソフトウェア開発工程' == actual[-1]
 ```
 
-次のようなユーティリティ関数を作ってみる。
+組み込みのフィクスチャもいくつか用意されています。例えば `tmp_path` という引数を指定すると、一時ディレクトリへのパスが渡されます。
 
-* `get_contents()`: 記事の本文のみを取り出す
-* `get_entities()`: 記事のリンクのみを取り出す
+#### リファレンス
 
-#### 実は Web API 用意されてた？！
+* [pytest fixtures: explicit, modular, scalable](https://docs.pytest.org/en/stable/fixture.html)
 
-* 記事からリンクしている記事の一覧を取得するには `prop=links` を指定する
-* 記事が属するカテゴリの一覧を取得するには `prop=categories` を指定する
+### テスト実行例
 
-ドキュメントや仕様を確認してからプログラミングしましょう。。。
-
-
-### キーワードで記事を検索
-
-次のようなパラメーターで Web API を呼び出す。
-
-* https://ja.wikipedia.org/w/api.php?format=xml&action=query&list=search&srsearch=%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0
-
-#### 検索結果とページング
-
-検索結果のような不特定の件数が返る一覧を取得するときは1回の Web API の呼び出しで全件を取得できないことが多い。一般論として、サーバーは多くのクライアントからのリクエストを受け付けるので1回の処理で多くのリソースを浪費してしまうと、同時に多くのリクエストを処理できなくなるからです。Google やヤフーなどの検索結果の画面などをイメージしてください。
-
-MediaWiki API では次のパラメーターで検索結果の位置と件数を指定できる。
-
-* srlimit: 取得する件数
-* sroffset: 取得する検索結果の位置
-
-こういった取得件数を制御しながらデータを取得する処理を **ページング** と呼びます。
-
-1回の Web API の呼び出しで取得できない件数の検索結果を取得するときはページングを行って、何度か Web API を呼び出す必要があります。
-
-MediaWiki API では `totalhits` というフィールドに検索結果の件数も返される。
-
-```json
-{
-  "batchcomplete": "",
-  "continue": {
-    "sroffset": 100,
-    "continue": "-||"
-  },
-  "query": {
-    "searchinfo": {
-      "totalhits": 10905
-    },
-    "search": [
-      {
-        ...
-      }
-    ]
-  }
-}
+```bash
+$ pytest pytest_utils.py
 ```
+
+### 使いどころ
+
+pytest は多くの機能をもっているのでシンプルな用途から高度なテストにも使えます。
+
+例)
+
+* unittest のスタイルが好きではない
+* ユニットテストよりもさらに複雑なテストを必要とするモジュールや処理
+
 
 ## Python プログラミング Tips
 
-### 文字列のエンコードとデコード
+### `-m` オプションでモジュールを実行する
 
-文字列を使ったエンコーディングの操作を試してみる。
+> sys.path から指定されたモジュール名のモジュールを探し、その内容を `__main__` モジュールとして実行します。
+> 
+> https://docs.python.org/ja/3/using/cmdline.html?#cmdoption-m
 
-Python 3 では文字列は Unicode 文字列として扱われるようになった。例えば、次のように `'プログラミング'` という文字列は Unicode 文字列になる。
+#### doctest
 
-プログラミングするときに文字列のエンコーディング (文字コード) を意識する機会は減っている。
-
-```python
->>> s = 'プログラミング'
->>> type(s)
-<class 'str'>
-```
-
-文字列は str 型になる。
-
-utf-8 でエンコードしたいときは次のようにして bytes 型として変換できる。
+次のコードを書かなくても実行できる。
 
 ```python
->>> b = s.encode('utf-8')
->>> b
-b'\xe3\x83\x97\xe3\x83\xad\xe3\x82\xb0\xe3\x83\xa9\xe3\x83\x9f\xe3\x83\xb3\xe3\x82\xb0'
->>> type(b)
-<class 'bytes'>
->>> b.decode('utf-8')
-'プログラミング'
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
 ```
 
-### Python で Unicode エスケープされた文字列を出力する
-
-Unicode エスケープされた文字列として扱いたい場合、`unicode_escape` という特別なエンコーディングを用いてエンコードする。
+これで実行できる。
 
 ```python
->>> b = 'プログラミング'.encode('unicode_escape')
->>> b
-b'\\u30d7\\u30ed\\u30b0\\u30e9\\u30df\\u30f3\\u30b0'
->>> type(b)
-<class 'bytes'>
+$ python3 -m doctest utils.py
 ```
 
-str 型をエンコードしたので bytes 型のデータに変換される。
+#### unittest
 
-これを str 型に戻したいときは `ascii` という特別なエンコーディングを指定してデコードする。
+次のコードを書かなくても実行できる。
 
 ```python
->>> s = b.decode('ascii')
->>> s
-'\\u30d7\\u30ed\\u30b0\\u30e9\\u30df\\u30f3\\u30b0'
->>> type(s)
-<class 'str'>
->>> print(s)
-\u30d7\u30ed\u30b0\u30e9\u30df\u30f3\u30b0
+if __name__ == '__main__':
+    unittest.main()
 ```
 
-普通の文字列から Unicode エスケープされた文字列に変換できました。
-
-
-### 正規表現を使ってみる
-
-[正規表現](https://ja.wikipedia.org/wiki/%E6%AD%A3%E8%A6%8F%E8%A1%A8%E7%8F%BE) を簡潔に説明すると、ある文字列にマッチするパターンを表現したもの、もしくはその文法と言えます。プログラミングではよく使われる機能の1つなので簡単な正規表現が書けるようになると便利です。
-
-Python では標準ライブラリの [RE モジュール](https://docs.python.org/ja/3/library/re.html) を使って正規表現を扱います。
-
-例えば、`[[` と `]]` で囲まれた文字列にマッチする正規表現は次のようになります。Python で正規表現を記述するときは一般的に文字列の前に  `r` をつけた **Raw 文字列記法** を使います。
+これで実行できる。
 
 ```python
-> r'\[\[(.*?)\]\]'
+$ python3 -m unittest -v
 ```
-
-実際に正規表現を使った実行例。
-
-```python
->>> import re
->>> s = 'インターネット[[チェス]]のプログラム[[Lichess]]の[[人工知能]]のプログラミングの例。'
->>> re.findall(r'\[\[(.*?)\]\]', s)
-['チェス', 'Lichess', '人工知能']
-```
-
-最初のうちは、ドキュメントを読みながらインタラクティブシェルを使って意図した文字列にマッチするか、実際に実行して正規表現を記述するとよいでしょう。
-
-## リファレンス
-
-* [MediaWiki APIを使ってWikipediaの情報を取得](https://qiita.com/yubessy/items/16d2a074be84ee67c01f)
-* [PythonによるWikipediaを活用した自然言語処理](https://www.slideshare.net/ikuyamada/pythonwikipedia-120034699)
-
