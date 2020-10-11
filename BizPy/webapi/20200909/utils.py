@@ -2,7 +2,7 @@ import json
 import re
 from pprint import pprint 
 
-RE_ENTITIES = re.compile(r'\[\[(.*?)]\]', re.MULTILINE)
+RE_ENTITIES = re.compile(r'\[\[(.*?)\]\]', re.MULTILINE)
 
 
 def get_entities(contents):
