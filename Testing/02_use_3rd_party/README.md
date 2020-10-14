@@ -69,7 +69,7 @@ def test_answer():
 
 実行結果です。
 
-``
+```
     (pytesting) $ py.test tests/test_assert.py`
     ...
         def test_answer():
