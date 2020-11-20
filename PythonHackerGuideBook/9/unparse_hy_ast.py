@@ -15,6 +15,9 @@ hy_source = """
 def main():
     hy_tree = hy_parse(hy_source)
     py_ast = hy_compile(hy_tree, '__main__')
+    code = compile(py_ast, '', 'exec')
+    exec(code)
+    print('=' * 32)
     print(ast.unparse(py_ast))
 
 

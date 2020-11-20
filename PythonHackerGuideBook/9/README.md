@@ -48,6 +48,8 @@ print(add(3, 5))
 
 ```bash
 (py39) $ python unparse_hy_ast.py
+8
+================================
 def add(hyx_xXcommaX, y):
     return hyx_xXcommaX + y
 print(add(3, 5))
