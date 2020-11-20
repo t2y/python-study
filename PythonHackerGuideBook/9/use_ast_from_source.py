@@ -3,7 +3,7 @@ import sys
 
 
 def parse_source(filename):
-    with open('adder.py') as py:
+    with open(filename) as py:
         source = py.read()
         return ast.parse(source)
 
