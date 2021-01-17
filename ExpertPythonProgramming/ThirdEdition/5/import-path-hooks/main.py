@@ -1,5 +1,6 @@
 import sys
-from importlib.abc import Loader, MetaPathFinder
+from importlib.abc import Loader
+from importlib.abc import PathEntryFinder
 from importlib.util import spec_from_loader
 
 
@@ -23,51 +24,35 @@ class OtherModuleLoader(Loader):
         exec(data, _globals)
 
 
-class MyOSModuleLoader(Loader):
+class OtherPathEntryFinder(PathEntryFinder):
 
-    def create_module(self, spec):
-        print(f'{spec=}')
-        return None
-
-    def exec_module(self, module):
-        print(f'{module=}')
-        import os
-
-
-class MyMetaPathFinder(MetaPathFinder):
+    def __init__(self, path_entry):
+        print(f'{path_entry=}')
+        self.path_entry = path_entry
 
     def find_spec(self, fullname, path, target=None):
         print(f'{fullname=}')
         print(f'{path=}')
         print(f'{target=}')
-        if fullname == 'sub':
-            name = 'other'
+
+        path = path or self.path_entry
+        if fullname == path:
+            name = fullname
             other_module_loader = OtherModuleLoader('other.py')
             return spec_from_loader(name, loader=other_module_loader)
-        elif fullname == 'os':
-            return spec_from_loader('os', loader=MyOSModuleLoader())
-
-        return None
 
 
 def main():
     print('start')
 
-    print(f'{sys.meta_path=}')
-    sys.meta_path.insert(0, MyMetaPathFinder())
+    print(f'{sys.path_hooks=}')
+    sys.path_hooks.append(OtherPathEntryFinder)
+    sys.path.insert(0, 'trigger')
 
-    print('===== import sub module')
-    import sub
-    print(sub.__file__)
-    print()
+    print('===== import trigger module')
 
-    print('===== import os module')
-    import os  # already sys.modules has os module
-    print(sys.modules['os'])
-
-    del sys.modules['os']
-    import os
-    print(sys.modules['os'])
+    import trigger
+    print(trigger.__file__)
 
     print('end')
 
