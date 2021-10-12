@@ -1,6 +1,6 @@
 # Slack のインテグレーション
 
-https://api.slack.com/start/overview によると、Slack を拡張する方法として2つのやり方がある。
+[An introduction to the Slack platform](https://api.slack.com/start/overview) によると、Slack を拡張する方法として2つのやり方がある。
 
 * ワークフロー
   * プログラミングする必要がない
@@ -12,7 +12,7 @@ https://api.slack.com/start/overview によると、Slack を拡張する方法�
 slack クライントでワークフローを作成するためのツール。
 次のドキュメントを読み進めながらチュートリアルをこなせば簡単に作成できる。
 
-* https://slack.com/intl/ja-jp/help/articles/360035692513-%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%83%93%E3%83%AB%E3%83%80%E3%83%BC%E3%82%AC%E3%82%A4%E3%83%89
+* [ワークフロービルダーガイド](https://slack.com/intl/ja-jp/help/articles/360035692513-%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%83%93%E3%83%AB%E3%83%80%E3%83%BC%E3%82%AC%E3%82%A4%E3%83%89)
 
 残念ながらこの機能は有料プランでのみ利用できる。
 BizPy ワークスペースはフリープランで使っているのでワークフロービルダーは使えない。
