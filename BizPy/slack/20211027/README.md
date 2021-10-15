@@ -32,6 +32,13 @@ BizPy ワークスペースはフリープランで使っているのでワー�
 
 ![](slack-integration-workflow-shortcut1.png)
 
+### サードパーティーのステップを利用する
+
+Slack 社が提供している [Google Sheets for Workflow Builder](https://slack.com/app-pages/google-sheets) を使うと簡単に Google Sheets を扱うステップを追加できる。
+
+![](slack-integration-workflow-step1.png)
+
+
 ## Slack app
 
 ひとくちに Slack app と言ってもピンからキリまでありそう。
