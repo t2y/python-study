@@ -38,6 +38,7 @@ Slack 社が提供している [Google Sheets for Workflow Builder](https://slac
 
 ![](slack-integration-workflow-step1.png)
 
+
 ## Slack apps
 
 自分でプログラムを書いて Slack API を使ってカスタムアプリケーションを作成する仕組み。ドキュメントは次になる。
@@ -46,7 +47,22 @@ Slack 社が提供している [Google Sheets for Workflow Builder](https://slac
 
 サイドバーをみてたら [日本語ページ](https://api.slack.com/lang/ja-jp) もあった。初心者はここから読み進める方が簡単かもしれない。
 
+### 開発ツールについて少し
+
+Slack 社が提供している開発ツールは次の場所でまとめられている。
+
+* [Tools built by Slack](https://api.slack.com/tools)
+
+公式ツールとしては Javascript, Python, Java の3つの言語向けに提供されている。また Python のツールでも2種類あることがわかる。
+
+* [python-slack-sdk](https://github.com/slackapi/python-slack-sdk)
+* [bolt-python](https://github.com/slackapi/bolt-python)
+
+本稿では `bolt-python` を使ってサンプルアプリを作る`bolt-python` は内部的に `python-slack-sdk` を使ったフレームワークになる。`python-slack-sdk` は slack api を使うときにプログラミングしやすいように提供されているライブラリに相当する。もし `bolt-python` ではできない処理などがあれば、`python-slack-sdk` を使って実装できそうかを検討してみるとよい。
+
 ### OAuth について少し
+
+Slack apps の設定には `OAuth スコープ` の設定が必須となる。本稿では OAuth の話しはしないが、アプリケーションの権限管理をする仕組みについて簡単に紹介しておく。
 
 ある操作をユーザーに許可するときに2つのやり方がある。
 
@@ -150,7 +166,7 @@ Subscribe to bot events のフォームで `app_mention` のイベントを設�
 
 言われた通り、￼アプリを再インストールする。
 
-slack client 上で bot を招待した適当なチャンネルで作成した slack apps にメンションする。
+slack client 上で bot を招待した適当なチャンネルで作成した Slack apps にメンションする。
 
 > @BizPy Bot こんにちはー
 
@@ -178,7 +194,10 @@ def handle_message_events(body, logger):
     logger.info(body)
 ```
 
-イベントの種別 (type) をみて処理をわけるとかやってみる。
+#### 練習問題
+
+* `bizpy_bot.py` のコードを書き換えながらイベント種別 (type) を参照する処理を書いてみよう
+* [slack_bolt.kwargs_injection.args](https://slack.dev/bolt-python/api-docs/slack_bolt/kwargs_injection/args.html) によると、イベントハンドラーが受け取れる引数名の一覧がある、これらを使って処理を書いてみよう
 
 ### 一時的なインターネットとの通信に ngrok (エングロック) を使う
 
