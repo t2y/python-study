@@ -164,7 +164,7 @@ Subscribe to bot events のフォームで `app_mention` のイベントを設�
 
 > You’ve changed the permission scopes your app uses. Please reinstall your app for these changes to take effect (and if your app is listed in the Slack App Directory, you’ll need to resubmit it as well).
 
-言われた通り、￼アプリを再インストールする。
+言われた通り、アプリを再インストールする。
 
 slack client 上で bot を招待した適当なチャンネルで作成した Slack apps にメンションする。
 
