@@ -89,6 +89,8 @@ Slack apps の設定には `OAuth スコープ` の設定が必須となる。�
 
 ### 簡単な bot アプリの開発
 
+[Bolt フレームワークを使って Slack Bot を作ろう](https://api.slack.com/lang/ja-jp/hello-world-bolt) のチュートリアルが参考になる。このチュートリアルでは JavaScript と Glitch という IDE を使って作業している。本稿ではその部分を Python とローカル環境で作業することに置き換えている。
+
 Slack App マネージメントで新規アプリを作成する。
 
 ![](slack-create-app1.png)
