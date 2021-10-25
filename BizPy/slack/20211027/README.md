@@ -43,9 +43,11 @@ Slack 社が提供している [Google Sheets for Workflow Builder](https://slac
 
 自分でプログラムを書いて Slack API を使ってカスタムアプリケーションを作成する仕組み。ドキュメントは次になる。
 
-* https://api.slack.com/start/building
+* [Building a Slack app](https://api.slack.com/start/building)
 
 サイドバーをみてたら [日本語ページ](https://api.slack.com/lang/ja-jp) もあった。初心者はここから読み進める方が簡単かもしれない。
+
+[Slack Community](https://slackcommunity.com/) のページでアカウント登録すると、メールで Slack Community のワークスペースのための招待リンクが送られてきて参加できる。このワークスペースの `#lang-japanese` というチャンネルがあるので日本語でも Slack apps の開発について相談したりできます。
 
 ### 開発ツールについて少し
 
