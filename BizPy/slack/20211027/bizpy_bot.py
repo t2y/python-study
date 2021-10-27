@@ -9,7 +9,7 @@ app = App()
 
 @app.event("message")
 def handle_message_events(ack, body, logger):
-    logger.info(f'message: {body}'))
+    logger.info(f'message: {body}')
 
 @app.event('app_mention')
 def handle_app_mention(body, say, logger):
