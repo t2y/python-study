@@ -55,7 +55,7 @@ _HOME_VIEW = {
                     'action_id': 'open_modal',
                     'text': {
                         'type': 'plain_text',
-                        'text': 'モーダルを開く',
+                        'text': 'モーダル画面を開く',
                     },
                     'style': 'primary',
                 },
