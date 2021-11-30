@@ -53,7 +53,7 @@ https://somewhere.ngrok.io/slack/events
 
 後述する画面でインタラクティブな操作を行うと、アクションのイベントが届くようになる。bolt アプリケーションのソースコードがそのアクションのイベントハンドラーを実装していないと次のようなログが出力される。
 
-`@app.event("app_home_opened")` ではなく `@app.action("my_buton_click")` のようにデコレーションに実装する以外はイベントハンドラーとほとんど同じにみえる。
+`@app.event("app_home_opened")` ではなく `@app.action("my_buton_click")` のようにデコレーターを実装する以外はイベントハンドラーとほとんど同じにみえる。
 
 ```python
 [Suggestion] You can handle this type of event with the following listener function:
